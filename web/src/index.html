@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Generic Anova</title>
+  <link rel="apple-touch-icon" href="generic-anova.png" />
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+
+<script id="my-template" type="x-template">
+  <div class="container">
+    <div class="row" style="margin-bottom: 10px;">
+      <div class="col-xs-12">
+          <div style="font-size: 2.5em;">
+            現在温度
+            <span class="label label-primary">{{current_temperature | numberFormat }}℃</span>
+          </div>
+      </div>
+    </div>
+
+    <div clss="row">
+      <div class="col-xs-12">
+          <span v-if="control_state=='start'" class="label label-info">制御稼働中</span>
+          <span v-if="control_state!='start'" class="label label-default">制御停止中</span>
+          <span style="font-size: 12pt;">{{ last_update | timeFormat('HH:mm:ss') }}</span> 
+          <span style="font-size: 12pt;">出力{{ power }}%</span> 
+      </div>
+    </div>
+
+    <div clss="row">
+      <div class="col-xs-12">
+        <chart-panel ref="chart" v-bind:target="target_temperature" v-bind:time_range="time_range"></chart-panel>
+      </div>
+    </div>
+    <div clss="row">
+      <div class="col-xs-offset-2 col-xs-10 btn-group btn-group-ms">
+        <button class="btn btn-default" v-on:click="time_range=0">All</button>
+        <button class="btn btn-default" v-on:click="time_range=60">60 min</button>
+        <button class="btn btn-default" v-on:click="time_range=30">30 min</button>
+        <button class="btn btn-default" v-on:click="time_range=10">10 min</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-xs-5">
+          <label for="target-temperature">設定温度</label>
+          <div class="input-group">
+            <input id="target-temperature" type="number" class="form-control text-right" v-model.number.lazy="target_temperature" />
+            <span class="input-group-addon">℃</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-xs-12">
+          <label >調理時間タイマー</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          経過時間: <span>{{ past_seconds | timetermFormat }}</span>
+          / 残り: <span>{{ left_seconds | timetermFormat }}</span>
+          / 終了時刻: <span>{{ end_time | timeFormat('HH:mm') }}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-8">
+          <div class="input-group">
+            <input type="number" class="form-control text-right" v-model.number="set_hours" v-bind:readonly="control_state=='start'"/>
+            <span class="input-group-addon">時間</span>
+            <input type="number" class="form-control text-right" v-model.number="set_minutes" v-bind:readonly="control_state=='start'"/>
+            <span class="input-group-addon">分</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-xs-12 btn-group">
+          <button class="btn btn-default" v-bind:disabled="control_state=='start'" v-on:click="timer_start"><span class="glyphicon glyphicon-play"></span>開始</button>
+          <button class="btn btn-default" v-bind:disabled="control_state!='start'" v-on:click="timer_pause"><span class="glyphicon glyphicon-pause"></span>一時停止</button>
+          <button class="btn btn-default" v-bind:disabled="control_state=='stop'" v-on:click="timer_stop" ><span class="glyphicon glyphicon-stop"></span>停止</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-xs-5">
+          <button class="btn btn-danger" v-bind:disabled="control_state!='stop'" v-on:click="clear"><span class="glyphicon glyphicon-trash"/>データ初期化</button>
+        </div>
+        <div class="col-xs-3">
+          <button class="btn btn-info" v-on:click="reload"><span class="glyphicon glyphicon-refresh"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+</head>
+<body >
+  <div id="app"></div>
+  <script src="bundle.js" ></script>
+</body>
+
+</html>

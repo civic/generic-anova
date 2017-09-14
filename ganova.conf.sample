@@ -1,0 +1,5 @@
+port=8000
+water_mac='28-xxxxxxxxxxxx'
+board_mac='28-yyyyyyyyyyyy'
+ifttt_api_key = 'zzzzzzzzzzzzzzzzzz'
+dummy_gpio='true'
