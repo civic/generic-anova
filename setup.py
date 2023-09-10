@@ -20,7 +20,7 @@ setup(
     author_email='',
     description='',
     install_requires=[
-        "tornado==4.5.2",
+        "tornado==6.3.3",
         "RPi.GPIO",
         "requests>=2.10.0",
     ],
